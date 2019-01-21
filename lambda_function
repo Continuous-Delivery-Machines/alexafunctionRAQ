@@ -18,7 +18,6 @@ def lambda_handler(event, context):
 
 
 def on_intent(intent_request, session):
-
     intent = intent_request["intent"]
     intent_name = intent_request["intent"]["name"]
     # our custom intents
@@ -43,27 +42,23 @@ def on_intent(intent_request, session):
         raise ValueError("Invalid intent")
 
 
-# message for our cloud formation stack
+# session is started -> message for our cloud formation stack
 def on_session_started(session_started_request, session):
     print("Starting new session.")
 
 
-# bei start -> sag was nettes
+# generic greeting
 def on_launch(launch_request, session):
-    return get_welcome_response()
-
-
-def get_welcome_response():
     session_attributes = {}
     card_title = "RAQ"
     speech_output = "Welcome to RAQ. " \
                     "Rarely Asked Questions."
     reprompt_text = "Welcome to RAQ."
     should_end_session = False
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
 
-# message for CFS -> Session ist vorbei
+#  session is over - message for our cloud formation stack
 def on_session_ended(session_ended_request, session):
     print("Ending session.")
 
@@ -74,7 +69,7 @@ def handle_filler_request():
     card_title = "Thanks for visiting RAQ. Bye."
     speech_output = "Thanks for visiting RAQ. Bye"
     should_end_session = True
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, None, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, None, should_end_session)
 
 
 def get_test_value():
@@ -83,19 +78,21 @@ def get_test_value():
     reprompt_text = "Test Value : DB Version"
     should_end_session = False
 
+    connection = connection_to_db()
     try:
-        with connection_to_db() as connection:
-            cursor = connection.cursor()
+        with connection.cursor() as cursor:
             cursor.execute("SELECT VERSION()")
             db_version = cursor.fetchone()
     except:
         db_version = -1
-    finally:
+    else:
         cursor.close()
+    finally:
         connection.close()
 
+    print(db_version)
     speech_output = "Mr Johnson, our. database . well. how do i. say it. version is " + str(db_version)
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
 
 def get_project_size_by_language():
@@ -104,7 +101,7 @@ def get_project_size_by_language():
     reprompt_text = ""
     should_end_session = False
     speech_output = "Filler"
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
 
 def get_commits_with_curses_by_language():
@@ -115,7 +112,7 @@ def get_commits_with_curses_by_language():
     reprompt_text = "hexes are bad"
     should_end_session = False
 
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
 
 def get_languages_used_together():
@@ -124,38 +121,39 @@ def get_languages_used_together():
     reprompt_text = ""
     should_end_session = False
     speech_output = "Filler"
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
-
+# connect to Database - the encoded environment variables were put into the aws lambda console
 def connection_to_db():
-    return pymysql.connect(os.environ['DBENDPOINT'], os.environ['DBUSER'], os.environ['DBPASSWORD'],
-                           os.environ['DBNAME'], connect_timeout=5)
+    return pymysql.connect(os.environ['DBENDPOINT'],
+                           os.environ['DBUSER'],
+                           os.environ['DBPASSWORD'],
+                           os.environ['DBNAME'],
+                           connect_timeout=5)
 
 
-def build_speechlet_response(title, output, reprompt_text, should_end_session):
-    return {
-        "outputSpeech": {
-            "type": "PlainText",
-            "text": output
-        },
-        "card": {
-            "type": "Simple",
-            "title": title,
-            "content": output
-        },
-        "reprompt": {
-            "outputSpeech": {
-                "type": "PlainText",
-                "text": reprompt_text
+# function used for building the answer (JSON)
+def build_response(session_attributes, title, output, reprompt_text, should_end_session):
+        return {
+            "version": "1.0",
+            "sessionAttributes": session_attributes,
+            "response": {
+
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": output
+                },
+                "card": {
+                    "type": "Simple",
+                    "title": title,
+                    "content": output
+                },
+                "reprompt": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": reprompt_text
+                    }
+                },
+                "shouldEndSession": should_end_session
             }
-        },
-        "shouldEndSession": should_end_session
-    }
-
-
-def build_response(session_attributes, speechlet_response):
-    return {
-        "version": "1.0",
-        "sessionAttributes": session_attributes,
-        "response": speechlet_response
-    }
+        }
