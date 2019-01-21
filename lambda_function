@@ -1,4 +1,6 @@
 import json
+import os
+import pymysql
 
 def lambda_handler(event, context):
 
@@ -21,6 +23,8 @@ def on_intent(intent_request, session):
     intent = intent_request["intent"]
     intent_name = intent_request["intent"]["name"]
 
+    if intent_name == "TestIntent":
+        return get_test_value()
     if intent_name == "GetElevators":
         return get_elevator_status()
     elif intent_name == "AMAZON.HelpIntent":
@@ -35,8 +39,8 @@ def on_session_ended(session_ended_request, session):
     # Cleanup goes here...
 
 def handle_session_end_request():
-    card_title = "BART - Thanks"
-    speech_output = "Thank you for using the BART skill.  See you next time!"
+    card_title = "RAQ - Bye bye"
+    speech_output = "See you next time!"
     should_end_session = True
 
     return build_response({}, build_speechlet_response(card_title, speech_output, None, should_end_session))
@@ -44,28 +48,47 @@ def handle_session_end_request():
 def get_welcome_response():
     session_attributes = {}
     card_title = "BART"
-    speech_output = "Welcome to the Alexa BART times skill. " \
-                    "You can ask me for train times from any station, or " \
-                    "ask me for system status or elevator status reports."
-    reprompt_text = "Please ask me for trains times from a station, " \
-                    "for example Fremont."
+    speech_output = "RAQ" \
+                    "Rarely Asked Questions"
+    reprompt_text = "Please ask me something"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
+
+def get_test_value():
+    session_attributes = {}
+    card_title = "Test Value , DB Version"
+    reprompt_text = "reprompt test text"
+    should_end_session = False
+    db_version = 0.0
+
+    try:
+        connection = pymysql.connect(os.environ['DBENDPOINT'], os.environ['DBUSER'] , os.environ['DBPASSWORD'], os.environ['DBNAME'], connect_timeout=5)
+        cursor = connection.cursor()
+        cursor.execute("SELECT VERSION()")
+        db_version = cursor.fetchone()
+    except:
+        db_version = -1
+    finally:
+        cursor.close()
+        connection.close()
+
+    speech_output = "Mr Johnson, our. database     version is " + str(db_version)
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+
+
 
 def get_elevator_status():
+
     session_attributes = {}
-    card_title = "BART Elevator Status"
-    reprompt_text = ""
+    card_title = "card title"
+    reprompt_text = "prompt text"
     should_end_session = False
+    speech_output = "some text output " \
+                    "new line"
 
-    response = urllib2.urlopen(API_BASE + "/elevatorstatus")
-    bart_elevator_status = json.load(response)
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
 
-    speech_output = "BART elevator status. " + bart_elevator_status["bsa"]["description"]
-
-    return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
 
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
     return {
