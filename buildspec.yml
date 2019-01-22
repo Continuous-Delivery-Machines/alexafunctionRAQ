@@ -4,17 +4,18 @@ phases:
 
   install:
     commands:
-      - pip install pymsql
+      - pip install pymysql
     finally:
-      - echo "pymsql installed"
+      - echo "pymysql installed"
   build:
     commands:
 
   post_build:
     commands:
-      - find target/
+
+
     finally:
-      - printenv
+
 artifacts:
   files:
     - '**/*'
