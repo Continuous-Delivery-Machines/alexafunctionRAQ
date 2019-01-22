@@ -2,6 +2,7 @@ import json
 import os
 import pymysql
 
+# test
 
 def lambda_handler(event, context):
     # on session start : greetings and cloud formation stack info
