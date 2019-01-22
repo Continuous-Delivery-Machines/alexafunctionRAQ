@@ -12,4 +12,4 @@ phases:
       - ls -al
 artifacts:
   files:
-- '**/*'
+    - '**/*'
