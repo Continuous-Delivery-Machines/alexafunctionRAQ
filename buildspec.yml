@@ -3,11 +3,11 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo Build started on `date`
-      - echo Compiling the Python code...
+      - echo Build started
+      - python --version
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Build completed
       - pwd
       - ls -al
 artifacts:
