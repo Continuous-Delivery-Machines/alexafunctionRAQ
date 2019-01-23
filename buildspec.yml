@@ -6,7 +6,7 @@ phases:
       - echo Build started
       - python --version
       - echo trying to install PyMySql and AWS CLI
-      - pip install pymsql
+      - pip install pymysql
       - echo PyMySql installed
       - pip install awscli
       - echo AWS CLI installed
