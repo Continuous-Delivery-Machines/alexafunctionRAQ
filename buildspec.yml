@@ -19,6 +19,6 @@ phases:
       # - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
       - ls -al
       # - aws lambda update-function-code --function-name "alexaFunctionRAQ" --zip-file "raq-alexa-lambda.zip"
-artifacts:
-  files:
-    - raq-alexa-lambda.zip
+#artifacts:
+ # files:
+  #  - raq-alexa-lambda.zip
