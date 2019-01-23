@@ -1,25 +1,31 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo START installing PyMySQL
+      - pip install pymysql -t .
+      - echo FINISHED installing PyMySQL
+
+      - echo START installing AWS CLI
+      - pip install awscli
+      - echo FINISHED installing AWS CLI
+    finally:
+      - python --version
+      - aws --version
   build:
     commands:
-      - echo Build started
-      - python --version
-      - echo trying to install PyMySql and AWS CLI
-      - pip install pymysql -t .
-      - echo PyMySql installed
-      - pip install awscli
-      - echo AWS CLI installed
-      - aws --version
+      - echo Build
+      - echo PLACEHOLDER
+      - echo Build
   post_build:
     commands:
-      - echo Build completed
-      - pwd
       - rm buil*
-      # - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
+      - pwd
       - ls -al
+      #- zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
       # - aws lambda update-function-code --function-name "alexaFunctionRAQ" --zip-file "raq-alexa-lambda.zip"
 artifacts:
   files:
     - '**/*'
-  #  - raq-alexa-lambda.zip
+    #- raq-alexa-lambda.zip
