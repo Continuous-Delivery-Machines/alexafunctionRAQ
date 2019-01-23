@@ -10,6 +10,7 @@ phases:
       - echo Build completed
       - pwd
       - ls -al
+      - zip raq-alexa-lambda.zip lambda_function.py
 artifacts:
   files:
-    - '**/*'
+    - raq-alexa-lambda.zip
