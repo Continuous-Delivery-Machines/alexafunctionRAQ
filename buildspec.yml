@@ -6,7 +6,6 @@ phases:
       - echo START installing PyMySQL
       - pip install pymysql -t .
       - echo FINISHED installing PyMySQL
-
       - echo START installing AWS CLI
       - pip install awscli
       - echo FINISHED installing AWS CLI
@@ -15,20 +14,19 @@ phases:
       - aws --version
   build:
     commands:
-      - echo List some Infos
-      - pwd
+      - echo try to zip and pseudo deploy
       - ls -al
-      - echo start zipping
       - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
-      - echo start deploy
       - pwd
       - aws lambda update-function-code --function-name arn:aws:lambda:us-east-1:397480882494:function:alexaFunctionRAQ --zip-file fileb://raq-alexa-lambda.zip
-      - echo update done
+    finally:
+      - echo function update done
   post_build:
     commands:
+      - echo clean up
       - rm buil*
       - rm *.zip
+      - pwd
 artifacts:
   files:
     - '**/*'
-    #- raq-alexa-lambda.zip
