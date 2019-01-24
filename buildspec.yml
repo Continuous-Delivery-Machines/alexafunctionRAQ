@@ -21,7 +21,7 @@ phases:
       - echo start zipping
       - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
       - echo start deploy
-      - aws lambda update-function-code --function-name alexaFunctionRAQ --zip-file fileb://raq-alexa-lambda.zip \
+      - aws lambda update-function-code --function-name alexaFunctionRAQ --zip-file raq-alexa-lambda.zip
       - echo update done
   post_build:
     commands:
