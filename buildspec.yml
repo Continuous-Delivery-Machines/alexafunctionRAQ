@@ -15,16 +15,19 @@ phases:
       - aws --version
   build:
     commands:
-      - echo Build
-      - echo PLACEHOLDER
-      - echo Build
+      - echo List some Infos
+      - pwd
+      - ls -al
+      - aws lambda list-functions
+      - echo start zipping
+      - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
+      - echo start deploy
+      - aws lambda update-function-code --function-name alexaFunctionRAQ --zip-file fileb://raq-alexa-lambda.zip \
+      - echo update done
   post_build:
     commands:
       - rm buil*
-      - pwd
-      - ls -al
-      #- zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
-      # - aws lambda update-function-code --function-name "alexaFunctionRAQ" --zip-file "raq-alexa-lambda.zip"
+      - rm *.zip
 artifacts:
   files:
     - '**/*'
