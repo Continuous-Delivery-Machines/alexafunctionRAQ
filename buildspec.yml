@@ -18,7 +18,6 @@ phases:
       - echo List some Infos
       - pwd
       - ls -al
-      - aws lambda list-functions
       - echo start zipping
       - zip -r raq-alexa-lambda.zip lambda_function.py pymy* PyMy*
       - echo start deploy
