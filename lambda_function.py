@@ -110,8 +110,8 @@ def get_project_size_by_language(intent):
     query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'Python'"
     answer_text = get_database_information(query_text)
     if answer_text is not None:
-        reprompt_text = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
-        speech_output = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
+        reprompt_text = "The average size of a " + programming_language + " project is " + answer_text + " Byte "
+        speech_output = "The average size of a " + programming_language + " project is " + answer_text + " Byte "
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
@@ -123,12 +123,11 @@ def get_commits_with_curses_by_language():
     reprompt_text = "Sorry, I don't know that one. Please try again."
     speech_output = "Sorry, I don't know that one. Please try again."
     should_end_session = False
-
     query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'PHP'"
     answer_text = get_database_information(query_text)
     if answer_text is not None:
-        reprompt_text = "The most commits with the word 'fuck' are found in" + answer_text + "projects"
-        speech_output = "The most commits with the word 'fuck' are found in" + answer_text + "projects"
+        reprompt_text = "The most commits with the word 'fuck' are found in " + answer_text + " projects"
+        speech_output = "The most commits with the word 'fuck' are found in " + answer_text + " projects"
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
@@ -142,13 +141,12 @@ def get_languages_used_together(intent):
     should_end_session = False
 
     # if a programming language was found, build a query, ask the database and build the answer string
-    if "programminglanguage" in intent["slots"]:
-        programming_language = intent["slots"]["programminglanguage"]["value"]
-        query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'C'"
-        answer_text = get_database_information(query_text)
-        if answer_text is not None:
-            reprompt_text = programming_language + "is most commonly used with" + answer_text
-            speech_output = programming_language + "is most commonly used with" + answer_text
+    programming_language = "Python"
+    query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'C'"
+    answer_text = get_database_information(query_text)
+    if answer_text is not None:
+        reprompt_text = programming_language + "is most commonly used with" + answer_text
+        speech_output = programming_language + "is most commonly used with" + answer_text
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
@@ -159,7 +157,8 @@ def get_database_information(query_string):
     try:
         with connection.cursor() as cursor:
             cursor.execute(query_string)
-            answer_from_db = cursor.fetchone()
+            value, answer_from_db = cursor.fetchone()
+            #data, answer_from_db = str(data['attr2'])
     except:
         answer_from_db = None
     else:
