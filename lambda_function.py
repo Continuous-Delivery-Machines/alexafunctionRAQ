@@ -27,7 +27,7 @@ def on_intent(intent_request, session):
     elif intent_name == "ProjectSizeByLanguage":
         return get_project_size_by_language(intent)
     elif intent_name == "CommitsWithCursesByLanguage":
-        return get_commits_with_curses_by_language(intent)
+        return get_commits_with_curses_by_language()
     elif intent_name == "LanguagesUsedTogether":
         return get_languages_used_together(intent)
     # the obligatory amazon-made Intents - output: basically placeholders
@@ -92,7 +92,8 @@ def get_test_value():
         cursor.close()
     finally:
         connection.close()
-        speech_output = speech_output + str(db_version)
+        reprompt_text = "Test my reprompt text"
+        speech_output = "Testoutput: DB-Version is" + str(db_version)
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
@@ -108,7 +109,7 @@ def get_project_size_by_language(intent):
     # if a programming language was found, build a query, ask the database and build the answer string
     if "programminglanguage" in intent["slots"]:
         programming_language = intent["slots"]["programminglanguage"]["value"]
-        query_text = "SELECT VERSION()"
+        query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'Python'"
         answer_text = get_database_information(query_text)
         if answer_text is not None:
             reprompt_text = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
@@ -118,14 +119,14 @@ def get_project_size_by_language(intent):
 
 
 # "language with most commits with curses" intent - output: language, amount or generic cover-up message on connection error
-def get_commits_with_curses_by_language(intent):
+def get_commits_with_curses_by_language():
     session_attributes = {}
-    card_title = "Get the average project size for a language"
+    card_title = "Get the most impolite language"
     reprompt_text = "Sorry, I don't know that one. Please try again."
     speech_output = "Sorry, I don't know that one. Please try again."
     should_end_session = False
 
-    query_text = "SELECT VERSION()"
+    query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'PHP'"
     answer_text = get_database_information(query_text)
     if answer_text is not None:
         reprompt_text = "The most commits with the word 'fuck' are found in" + answer_text + "projects"
@@ -145,7 +146,7 @@ def get_languages_used_together(intent):
     # if a programming language was found, build a query, ask the database and build the answer string
     if "programminglanguage" in intent["slots"]:
         programming_language = intent["slots"]["programminglanguage"]["value"]
-        query_text = "SELECT VERSION()"
+        query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'C'"
         answer_text = get_database_information(query_text)
         if answer_text is not None:
             reprompt_text = programming_language + "is most commonly used with" + answer_text
