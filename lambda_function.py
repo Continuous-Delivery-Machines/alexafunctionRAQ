@@ -105,15 +105,13 @@ def get_project_size_by_language(intent):
     reprompt_text = "Sorry, I don't know that one. Please try again."
     speech_output = "Sorry, I don't know that one. Please try again."
     should_end_session = False
-
     # if a programming language was found, build a query, ask the database and build the answer string
-    if "programminglanguage" in intent["slots"]:
-        programming_language = intent["slots"]["programminglanguage"]["value"]
-        query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'Python'"
-        answer_text = get_database_information(query_text)
-        if answer_text is not None:
-            reprompt_text = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
-            speech_output = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
+    programming_language = "Python"
+    query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'Python'"
+    answer_text = get_database_information(query_text)
+    if answer_text is not None:
+        reprompt_text = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
+        speech_output = "The average size of a" + programming_language + "project is" + answer_text + "Byte"
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
