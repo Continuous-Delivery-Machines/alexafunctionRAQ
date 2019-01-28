@@ -126,8 +126,8 @@ def get_commits_with_curses_by_language():
     query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'PHP'"
     answer_text = get_database_information(query_text)
     if answer_text is not None:
-        reprompt_text = "The most commits with the word 'fuck' are found in " + answer_text + " projects"
-        speech_output = "The most commits with the word 'fuck' are found in " + answer_text + " projects"
+        reprompt_text = "The most commits with the word 'fuck' are found in " + answer_text + " PHP projects"
+        speech_output = "The most commits with the word 'fuck' are found in " + answer_text + " PHP projects"
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
@@ -141,12 +141,12 @@ def get_languages_used_together(intent):
     should_end_session = False
 
     # if a programming language was found, build a query, ask the database and build the answer string
-    programming_language = "Python"
+    programming_language = "C"
     query_text = "SELECT TestTable.Attribute1 as attr1, TestTable.Attribute2 as attr2 FROM TestTable WHERE TestTable.Attribute1 = 'C'"
     answer_text = get_database_information(query_text)
     if answer_text is not None:
-        reprompt_text = programming_language + "is most commonly used with" + answer_text
-        speech_output = programming_language + "is most commonly used with" + answer_text
+        reprompt_text = programming_language + " is most commonly used with " + answer_text
+        speech_output = programming_language + " is most commonly used with " + answer_text
 
     return build_response(session_attributes, card_title, speech_output, reprompt_text, should_end_session)
 
